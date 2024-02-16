@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="book.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Booking Form</title>
+
+    
+  
+</head>
+<body>
+  <form method="post" id="mainForm">
+
+ 
+  <label for="name">Name:</label>
+    <input type="text" id="name" name="fullname" required>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" required>
+
+
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phoneN" required>
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required>
+
+
+
+    <label for="guest">Number of People:</label>
+    <input type="text" id="guest" name="guest" required>
+    <label for="arrival">Arrival time:</label>
+    <input type="date" id="arrival" name="arrivaltime" required>
+    <label for="leaving">Leaving:</label>
+    <input type="date" id="leaving" name="leaving" required>
+    <label for="destination">destination:</label>
+    <input type="text" id="guest" name="destination" required>
+  
+  
+     
+    
+    <button type="submit" name="send">Book Now</button>
+  </form>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script type="module">
+
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAn3nZ2sbPpvbm5jGx_-mrH4yn3HKexDGY",
+      authDomain: "gantabya-45058.firebaseapp.com",
+      projectId: "gantabya-45058",
+      storageBucket: "gantabya-45058.appspot.com",
+      messagingSenderId: "850545988573",
+      appId: "1:850545988573:web:6eba9623e569825489dc34",
+      measurementId: "G-Q1W2XDV1J3"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+
+    let name= document.getElementById('name');
+        let email= document.getElementById('email');
+        let phone= document.getElementById('phone');
+        let guest= document.getElementById('guest');
+        let address= document.getElementById('address');
+        let leaving= document.getElementById('leaving');
+        let arrival= document.getElementById('arrival');
+
+        let RegisterUser = evt => {
+            evt.preventDefault();
+
+            // Save user data to the database
+            set(ref(db, 'UsersAuthList/' + email.value.replace('.', '_')), {
+                name: name.value,
+                email: email.value,
+                phone: phone.value,
+                guest: guest.value,
+                arrival:arrival.value,
+                leaving:leaving.value,
+                address:address.value
+            })
+            .then(() => {
+                alert('Booked successful!');
+                window.location.href = `home.html`;
+
+            })
+            .catch((error) => {
+                alert(error.message);
+                console.log(error.code);
+                console.log(error.message);
+            })
+        }
+
+        mainForm.addEventListener('submit', RegisterUser);
+  </script>
+</body>
+</html>
