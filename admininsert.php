@@ -30,6 +30,13 @@ if(isset($_POST['reject'])) {
 $bookingRequests = getBookingRequests();
 ?>
 
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,16 +81,21 @@ $bookingRequests = getBookingRequests();
     </table>
 </body>
 </html>
-<?php
-// Include the database connection file or define the connection here
 
-// Function to add a new package
-function addPackage($name, $cost, $image) {
-    global $connection;
-    $insert_query = "INSERT INTO packages (name, cost, image) VALUES ('$name', '$cost', '$image')";
-    mysqli_query($connection, $insert_query);
+
+
+<?php
+function getpackagerequests() {
+    $requests_query = "SELECT * FROM packages";
+    $result = mysqli_query(mysqli_connect("localhost","root","","signup"), $requests_query);
+    $requests = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $requests;
 }
-    // Perform necessary database operations to add the package
+$packages = getpackagerequests();
+
+
+
+
 
 
 // Function to update an existing package
@@ -93,14 +105,35 @@ function updatePackage($id, $name, $cost, $image) {
 
 // Function to delete a package
 function deletePackage($id) {
-    // Perform necessary database operations to delete the package
+    $connection = mysqli_connect("localhost", "root", "", "signup");
+    $delete_query = "DELETE FROM packages WHERE id = $id";
+    $result = mysqli_query($connection, $delete_query);
+    mysqli_close($connection);
+}
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Process the form data
+    $package_id = $_POST['package_id'];
+    $name = $_POST['name'];
+    $cost = $_POST['cost'];
+    $description = $_POST['description'];
+    // Handle image upload if needed
+    // Redirect to package2.html along with form data
+
+
+
+    header("Location: package2.html?package_id=$package_id&name=$name&cost=$cost&description=$description");
+    exit; // Stop further execution
 }
 
+
+
 // Check if form is submitted for adding or updating package
-if(isset($_POST['submit'])) {
+if(isset($_POST['send'])) {
     // Extract form data
     $name = $_POST['name'];
     $cost = $_POST['cost'];
+    $description = $_POST['description'];
     // Handle image upload if needed
     if(isset($_FILES['image'])) {
         $image = $_FILES['image']['name'];
@@ -113,25 +146,23 @@ if(isset($_POST['submit'])) {
     }
 
     // Perform appropriate action based on the form submission
-    if(isset($_POST['package_id'])) {
-        // Update existing package
-        $id = $_POST['package_id'];
-        updatePackage($id, $name, $cost, $image);
-    } else {
-        // Add new package
-        addPackage($name, $cost, $image);
-    }
+    // if(isset($_POST['package_id'])) {
+    //     // Update existing package
+    //     $id = $_POST['package_id'];
+    //     updatePackage($id, $name, $cost, $description, $image);
+    // } else {
+    $insert_query = "INSERT INTO packages (name, cost, description, image) VALUES ('$name', '$cost', '$description', '$image')";
+    mysqli_query($connection, $insert_query);
+    // }
 }
 
 
 
 // Check if delete button is clicked
-if(isset($_POST['delete'])) {
+if(isset($_POST['del'])) {
     $id = $_POST['package_id'];
     deletePackage($id);
 }
-
-$packages = [];
 // Fetch existing packages from the database
 // You can use your existing database connection and query to fetch packages
 
@@ -140,6 +171,7 @@ $packages = [];
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Manage Packages</title>
@@ -156,9 +188,11 @@ $packages = [];
         <input type="hidden" name="package_id" value="<?php if(isset($package['id'])) echo $package['id']; ?>">
         <input type="text" name="name" placeholder="Package Name" value="<?php if(isset($package['name'])) echo $package['name']; ?>" required>
         <input type="text" name="cost" placeholder="Package Cost" value="<?php if(isset($package['cost'])) echo $package['cost']; ?>" required>
+        <input type="text" name="description" placeholder="Package description" value="<?php if(isset($package['description'])) echo $package['description']; ?>" required>
         <!-- Add input field for image upload if needed -->
-        <!-- <input type="file" name="image" required> -->
-        <button type="submit" name="submit">Submit</button>
+        <input type="file" name="image" required>
+
+        <button type="submit" name="send">Submit</button>
     </form>
 
     <!-- Table to display existing packages -->
@@ -166,26 +200,33 @@ $packages = [];
         <tr>
             <th>Package Name</th>
             <th>Package Cost</th>
+            <th>Package Description</th>
             <th>Action</th>
         </tr>
         
-        <?php foreach ($packages as $packages): ?>
+        <?php
+         foreach ($packages as $pack): ?>
         <tr>
-            <td><?= $package['name'] ?></td>
-            <td><?= $package['cost'] ?></td>
+            
+        <td><?= $pack['name'] ?></td>
+        <td><?= $pack['cost'] ?></td>
+        <td><?= $pack['description'] ?></td>
+            
             <td>
+                
 
                 <!-- Form for deleting a package -->
                 <form method="post">
-                    <input type="hidden" name="package_id" value="<?= $package['id'] ?>">
-                    <button type="submit" name="delete">Delete</button>
+                    <input type="hidden" name="package_id" value="<?= $pack['id'] ?>">
+                    <button type="submit" name="del">Delete</button>
                 </form>
                 <!-- Form for updating a package -->
                 <form method="post">
-                    <input type="hidden" name="package_id" value="<?= $package['id'] ?>">
-                    <input type="hidden" name="name" value="<?= $package['name'] ?>">
-                    <input type="hidden" name="cost" value="<?= $package['cost'] ?>">
-                    <!-- <input type="hidden" name="image" value="<?= $package['image'] ?>"> -->
+                    <input type="hidden" name="package_id" value="<?= $pack['id'] ?>">
+                    <input type="hidden" name="name" value="<?= $pack['name'] ?>">
+                    <input type="hidden" name="cost" value="<?= $pack['cost'] ?>">
+                    <input type="hidden" name="description" value="<?= $pack['description'] ?>">
+                    <!-- <input type="hidden" name="image" value="<?= $pack['image'] ?>"> -->
                     <button type="submit" name="submit">Update</button>
                 </form>
             </td>
@@ -196,4 +237,57 @@ $packages = [];
     <!-- Include your footer or any additional HTML content as needed -->
 
 </body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        form {
+            display: inline;
+        }
+    </style>
+</head>
+
 </html>

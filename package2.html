@@ -1,73 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Packages</title>
-    <!-- Include your CSS file -->
-    <link rel="stylesheet" href="package.css">
+    <title>OUR PACKAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .package-details {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .package-details img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .package-details p {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <section class="home-packages">
-        <h1 class="heading">OUR PACKAGES</h1>
-        <div id="packages-container" class="box-container">
-            <!-- Packages will be dynamically added here -->
-        </div>
-    </section>
-    
-
-    
-
-    <!-- Include your footer or any additional HTML content as needed -->
-
-    <!-- Include jQuery library (you can use vanilla JavaScript if preferred) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Function to fetch packages from the server
-            // Function to fetch packages from the server
-function fetchPackages() {
-    $.ajax({
-        url: 'http://localhost/re.php', // Replace 'fetch_packages.php' with your PHP script
-        type: 'GET',
-        success: function(response) {
-            // Parse the JSON response
-            var packages = JSON.parse(response);
-            // Clear existing packages
-            $('#packages-container').empty();
-            // Iterate over each package and add it to the HTML
-            packages.forEach(function(package) {
-                $('#packages-container').append(`
-                    <div class="box">
-                        <div class="images">
-                            <img src="images/${package.image}" alt="${package.name}">
-                        </div>
-                        <div class="content">
-                            <h3>${package.name}</h3>
-                            <h4>Cost: ${package.cost}</h4>
-                            <p>Click <a href="package_details.php?package=${package.name}">here</a> for package details.</p>
-                            <a href="book.html" class="btn">Book now</a>
-                        </div>
-                    </div>
-                `);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching packages:', error);
-        }
-    });
-}
-
-    
-            // Call fetchPackages initially to load packages when the page loads
-            fetchPackages();
-    
-            // Optionally, you can refresh the packages periodically using setInterval
-            // setInterval(fetchPackages, 60000); // Refresh every minute (adjust as needed)
-        });
-    </script>
-    
-    
+    <h1>OUR PACKAGES</h1>
+    <div class="package-details">
+        
+    </div>
+</form>
 </body>
 </html>
+
+
+
+
